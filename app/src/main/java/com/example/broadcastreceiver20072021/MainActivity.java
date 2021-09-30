@@ -8,6 +8,11 @@ import android.net.ConnectivityManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.util.Pair;
+
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,18 +33,23 @@ public class MainActivity extends AppCompatActivity {
         intentFilter.addAction("android.net.conn.CONNECTIVITY_CHANGE");
         intentFilter.addAction("android.net.wifi.WIFI_STATE_CHANGED");
         registerReceiver(myBroadCast,intentFilter);
+        EventBus.getDefault().register(this);
     }
 
-
     @Override
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-        if (intent != null){
-            int upSpeed = intent.getIntExtra("upSpeed",Integer.MIN_VALUE);
-            int dowSpeed = intent.getIntExtra("downSpeed",Integer.MIN_VALUE);
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(myBroadCast);
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void onMessageEvent(Pair<Integer,Integer> data) {
+        if (data != null){
+            int upSpeed = data.first;
+            int dowSpeed = data.second;
             Log.d("BBB","Down speed" + dowSpeed);
             Log.d("BBB","Up speed" + upSpeed);
         }
-    }
-
+    };
 }

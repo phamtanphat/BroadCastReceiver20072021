@@ -7,7 +7,10 @@ import android.net.ConnectivityManager;
 import android.net.NetworkCapabilities;
 import android.net.NetworkInfo;
 import android.util.Log;
+import android.util.Pair;
 import android.widget.Toast;
+
+import org.greenrobot.eventbus.EventBus;
 
 public class MyBroadCast extends BroadcastReceiver {
     @Override
@@ -24,10 +27,9 @@ public class MyBroadCast extends BroadcastReceiver {
             NetworkCapabilities nc = connectivityManager.getNetworkCapabilities(connectivityManager.getActiveNetwork());
             int downSpeed = nc.getLinkDownstreamBandwidthKbps();
             int upSpeed = nc.getLinkUpstreamBandwidthKbps();
-            Intent intent1 = new Intent(context,MainActivity.class);
-            intent1.putExtra("upSpeed",upSpeed);
-            intent1.putExtra("downSpeed",downSpeed);
-            context.startActivity(intent1);
+
+            Pair<Integer,Integer> pair = new Pair<>(upSpeed,downSpeed);
+            EventBus.getDefault().post(pair);
 
 
         } else {
