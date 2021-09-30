@@ -12,6 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.BroadCastReceiver20072021">
         <activity
+            android:launchMode="singleInstance"
             android:name=".MainActivity"
             android:exported="true">
             <intent-filter>
